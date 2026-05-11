@@ -2,15 +2,19 @@
 
 ## Dataset
 
-
 ## Modules
 
+- [Recurrence Quantification Analysis](modules/Recurrence%20Quantification%20Analysis/)
+- [Next Entry](modules/Next%20Entry/)
 
 <!-- (TODO: REMOVE LATE) -->
-## Folder Structure Guidelines 
+
+## Folder Structure Guidelines
+
 Each entry should correspond to one module and is organized as a separate folder. Inside each entry folder, there should be `code` + `report` files.
 
 Example:
+
 ```
 └── modules
     └── Next Entry
