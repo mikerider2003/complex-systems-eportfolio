@@ -1,0 +1,84 @@
+---
+title: "Module 0 - Dataset_Overview: Traffic Signal Volume Data"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+For the group portfolio, we use traffic signal volume data from the Victorian Government Open Data Portal. The dataset contains traffic volume observations from signalized intersections in Victoria, Australia. The raw data are detector-level counts recorded at traffic signal sites and aggregated into 15-minute intervals. A detector corresponds to a loop detector installed in the road surface, which records vehicle presence or passage for a specific lane or movement.
+
+Our project focuses on five traffic-signal sites along the Burwood Highway corridor in Victoria. These sites were selected because they are located along the same urban arterial corridor and therefore plausibly form a connected traffic system. This makes the dataset suitable for exploring temporal structure, variability, and relationships between traffic-volume patterns across locations in the corridor.
+
+The five selected sites are:
+
+| Site number |             Site name             |
+|:-----------:|:---------------------------------:|
+|     100     |     Burwood Hwy / Livingstone     |
+|     161     | Burwood Hwy / Lakeside / Woodvale |
+|     162     |      Burwood Hwy / Blackburn      |
+|     163     |      Burwood Hwy / Sevenoaks      |
+|     164     |     Burwood Hwy / Springvale      |
+
+For spatial analyses, the sites are ordered approximately from west to east as:
+
+| Corridor order | Site number |             Site name             |
+|:--------------:|:-----------:|:---------------------------------:|
+|       1        |     162     |      Burwood Hwy / Blackburn      |
+|       2        |     163     |      Burwood Hwy / Sevenoaks      |
+|       3        |     161     | Burwood Hwy / Lakeside / Woodvale |
+|       4        |     164     |     Burwood Hwy / Springvale      |
+|       5        |     100     |     Burwood Hwy / Livingstone     |
+
+The map below shows the geographic location of each site used in the portfolio.
+
+```{r site-location-map, message= FALSE, warning=FALSE}
+library(tibble)
+library(leaflet)
+library(dplyr)
+
+sites <- tibble(
+  site_no = c(100, 161, 162, 163, 164),
+  site_name = c(
+    "BURWOOD HWY / LIVINGSTONE",
+    "BURWOOD HWY / LAKESIDE / WOODVALE",
+    "BURWOOD HWY / BLACKBURN",
+    "BURWOOD HWY / SEVENOAKS",
+    "BURWOOD HWY / SPRINGVALE"
+  ),
+  lat = c(-37.856420, -37.854489, -37.852745, -37.853654, -37.854961),
+  lon = c(145.181054, 145.165371, 145.151921, 145.158269, 145.169242)
+)
+
+leaflet(sites) %>%
+  addTiles() %>%
+  setView(
+    lng = mean(sites$lon),
+    lat = mean(sites$lat),
+    zoom = 13
+  ) %>%
+  addMarkers(
+    lng = ~lon,
+    lat = ~lat,
+    popup = ~paste0("<b>Site ", site_no, "</b><br>", site_name)
+  )
+```
+
+The image below is a screenshot of one of the locations on google streetview:
+
+![Site 163: Burwood HWY / Sevenoaks](images/Site_163.png)
+
+The analysis period is March 2026. The data are sampled every 15 minutes, resulting in 96 observations per day per site / detector. Depending on the module entry, the data may be analyzed at detector level or aggregated to site level. Detector-level analysis preserves lane- or movement-specific information, but can be complicated by unequal detector availability across sites. Site-level aggregation provides one comparable time series per site, but loses direction-specific and lane-specific detail.
+
+#### Data completeness
+
+The March 2026 dataset is not perfectly complete for all selected sites. At the site level, one date is unavailable across all five selected sites: 2026-03-14. In addition, site 161 and site 163 are unavailable on 2026-03-10, and site 164 is unavailable on 2026-03-22. Therefore, analyses that require all five sites to be observed at the same timestamps can use 28 complete days, corresponding to 2,688 aligned 15-minute observations.
+
+The detector-level data also show variation in detector availability. Although each site contains detectors numbered 1-24 in the file, not every detector is available on every day. Some dates have fewer than 24 detectors available at a site. This means that site-level totals can sometimes be influenced by detector availability, not only by actual traffic volume. Individual module entries therefore explain how they handle missing days, incomplete detector coverage, and site-level aggregation.
+
+#### Limitations
+
+A key limitation of the dataset is that traffic volumes are likely influenced by shared external rhythms, such as commuting schedules, weekday-weekend differences, school or work routines, and signal timing. Therefore, similarity between sites should be interpreted carefully: two sites may show similar patterns because they are part of the same traffic corridor, but also because they are both affected by the same daily or weekly rhythms. Individual module entries address this issue in ways appropriate to their specific research questions.
+
+#### Reference:
+
+Department of Transport and Planning Victoria. (2026). *Traffic Signal Volume Data*. Victorian Government Open Data Portal.
